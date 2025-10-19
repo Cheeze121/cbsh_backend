@@ -25,9 +25,10 @@ def get_selfstudy():
         "Connection": "keep-alive"
     }
     
-    today_iso = datetime.utcnow().strftime("%Y-%m-%dT00:00:00.000Z")
-    data = {"date": today_iso}
-
+    kst = datetime.utcnow() + timedelta(hours=9)
+    today_kst_iso = kst.strftime("%Y-%m-%dT00:00:00.000Z")
+    data = {"date": today_kst_iso}
+    
     response = requests.post(url, headers=headers, json=data)
     json_data = response.json()
 
