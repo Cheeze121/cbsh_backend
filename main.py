@@ -1,6 +1,8 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 import requests
+from datetime import datetime
+
 
 app = FastAPI()
 
@@ -22,7 +24,9 @@ def get_selfstudy():
         "Cache-Control": "no-cache",
         "Connection": "keep-alive"
     }
-    data = {"date": "2025-10-19T00:00:00.000Z"}
+    
+    today_iso = datetime.utcnow().strftime("%Y-%m-%dT00:00:00.000Z")
+    data = {"date": today_iso}
 
     response = requests.post(url, headers=headers, json=data)
     json_data = response.json()
