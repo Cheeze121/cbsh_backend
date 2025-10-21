@@ -42,6 +42,7 @@ def get_selfstudy():
         student_id = f"{grade}{class_no}{number:02d}"
 
         info = {
+            "type": item.get("type", "selfstudy") or "selfstudy"
             "period": item.get("period", 0) or 0,
             "student_name": student.get("name", "이름없음") or "이름없음",
             "student_id": student_id,
