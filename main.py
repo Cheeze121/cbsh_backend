@@ -49,6 +49,10 @@ def get_selfstudy():
             "room_name": item.get("room", {}).get("name", "방없음") or "방없음",
             "seat_name": item.get("seat", {}).get("name") if item.get("seat") else "없음"
         }
+
+        if info["type"] == "outstay":
+            info["reason"] = item.get("reason", "사유없음")
+        
         results.append(info)
 
     results_sorted = sorted(results, key=lambda x: (
