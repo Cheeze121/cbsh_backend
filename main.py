@@ -17,7 +17,7 @@ app.add_middleware(
 def get_selfstudy():
     url = "https://api.cbsh.edu-set.com/selfstudy/search"
     headers = {
-        "Authorization": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI4OWEyZWIyNi0xMGM1LTQ5NWEtOTU5MC0xZjlkYTQ5OTg1YjkiLCJpYXQiOjE3NjI0MjQzNDYsImV4cCI6MTc2MjY4MzU0Nn0.9fUkjP5Lx8AXs2Vq2fSPyHCkxvHsXm7whcoKQO_rlVQ",
+        "Authorization": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI4OWEyZWIyNi0xMGM1LTQ5NWEtOTU5MC0xZjlkYTQ5OTg1YjkiLCJpYXQiOjE3NjI4NDgwNzksImV4cCI6MTc2MzEwNzI3OX0.RXs0OJ-uKVekquPbKabobp9xTChLHeQVtSLoAemDdjQ",
         "Content-Type": "application/json",
         "Accept": "*/*",
         "User-Agent": "PostmanRuntime/7.49.0",
