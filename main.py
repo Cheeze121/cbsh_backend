@@ -7,7 +7,7 @@ from datetime import datetime, timedelta
 
 app = FastAPI()
 
-token = ""
+token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI4OWEyZWIyNi0xMGM1LTQ5NWEtOTU5MC0xZjlkYTQ5OTg1YjkiLCJpYXQiOjE3NjI4NDgwNzksImV4cCI6MTc2MzEwNzI3OX0.RXs0OJ-uKVekquPbKabobp9xTChLHeQVtSLoAemDdjQ"
 
 app.add_middleware(
     CORSMiddleware,
