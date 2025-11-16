@@ -1,64 +1,11 @@
-from fastapi import FastAPI
+from fastapi import FastAPI, Request
 from fastapi.middleware.cors import CORSMiddleware
 import requests
 from datetime import datetime, timedelta
-import base64
-import json
-import time
-from selenium.webdriver.common.by import By
-from seleniumbase import SB
-from dotenv import load_dotenv
-import os
-import time
-
-def decode_payload(t):
-    h, p, s = t.split(".")
-    p += "=" * (-len(p) % 4)
-    return json.loads(base64.urlsafe_b64decode(p.encode()).decode())
-
-def get_token():
-    load_dotenv()
-
-    signin_id = os.environ.get("ID")
-    signin_pw = os.environ.get("PW")
-
-    TARGET_SITE = "https://cbsh.edu-set.com"
-    LOGIN_URL = "https://cbsh.edu-set.com/signin"
-    TARGET_PATHS = {
-        "페이지1": "https://cbsh.edu-set.com/std/selfstudy/manage"
-    }
-
-    with SB(uc=True, headless2=True, test=True) as sb:
-        sb.uc_open_with_reconnect(TARGET_SITE, reconnect_time=10)
-
-        sb.uc_open_with_reconnect(LOGIN_URL, reconnect_time=10)
-
-        sb.type("input[name='id']", signin_id)
-        sb.type("input[name='password']", signin_pw)
-        sb.click("button[type='submit']")
-        sb.sleep(10)
-
-        token = sb.execute_script("return window.localStorage.getItem('accessToken');")
-        return token
-
-def valid_token(token):
-    payload = decode_payload(token)
-    exp = payload.get("exp")
-    if exp is None:
-        return None
-    if exp < int(time.time()):
-        return None
-    return token
-
-def get_valid_token(token):
-    v = valid_token(token)
-    if v is None:
-        return get_token()
-    return v
-
-token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI4OWEyZWIyNi0xMGM1LTQ5NWEtOTU5MC0xZjlkYTQ5OTg1YjkiLCJpYXQiOjE3NjI4NDgwNzksImV4cCI6MTc2MzEwNzI3OX0.RXs0OJ-uKVekquPbKabobp9xTChLHeQVtSLoAemDdjQ"
 
 app = FastAPI()
+
+token = ""
 
 app.add_middleware(
     CORSMiddleware,
@@ -67,11 +14,15 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
+@app.post("/update_token")
+async def update_token(request: Request):
+    global token
+    body = await request.json()
+    token = body.get("accessToken", "")
+    return {"status": "ok"}
+
 @app.get("/selfstudy")
 def get_selfstudy():
-    global token
-    token = get_valid_token(token)
-
     url = "https://api.cbsh.edu-set.com/selfstudy/search"
     headers = {
         "Authorization": "Bearer " + token,
