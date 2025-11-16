@@ -1,6 +1,8 @@
 from fastapi import FastAPI, Request
 from fastapi.middleware.cors import CORSMiddleware
 import requests
+import os
+import time
 from datetime import datetime, timedelta
 
 app = FastAPI()
@@ -14,6 +16,58 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
+def trigger_selenium():
+    url = "https://api.github.com/repos/Cheeze121/get_token/dispatches"
+    
+    headers = {
+        "Accept": "application/vnd.github+json",
+        "Authorization": f"token {os.environ['GITHUB_TOKEN']}"
+    }
+
+    data = { "event_type": "run_selenium" }
+
+    res = requests.post(url, json=data, headers=headers)
+    return res.status_code
+
+def decode_payload(token_str):
+    # JWT payload 디코딩 (base64 decode)
+    import base64
+    import json
+    try:
+        payload_part = token_str.split(".")[1]
+        padded = payload_part + "=" * (-len(payload_part) % 4)
+        decoded = base64.urlsafe_b64decode(padded)
+        return json.loads(decoded)
+    except:
+        return {}
+
+def valid_token():
+    global token
+    if token == "":
+        return None
+    
+    payload = decode_payload(token)
+    exp = payload.get("exp")
+
+    if exp is None:
+        return None
+
+    # 만료 확인
+    if exp < int(time.time()):
+        return None
+
+    return token
+
+def trigger_token():
+    return trigger_selenium()
+
+def get_valid_token():
+    v = valid_token()
+    if v is None:
+        trigger_token()
+        return None
+    return v
+
 @app.post("/update_token")
 async def update_token(request: Request):
     global token
@@ -23,6 +77,8 @@ async def update_token(request: Request):
 
 @app.get("/selfstudy")
 def get_selfstudy():
+    get_valid_token()
+
     url = "https://api.cbsh.edu-set.com/selfstudy/search"
     headers = {
         "Authorization": "Bearer " + token,
